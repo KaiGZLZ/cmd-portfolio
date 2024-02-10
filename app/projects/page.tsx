@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { posibleComands } from './comands'
+import posibleComands from './comands'
 import Console from '../ui/Console'
 import Image from 'next/image'
 import { lato } from '../ui/fonts'
 import Link from 'next/link'
 
 export default function Home (): JSX.Element {
+  window.scrollTo(0, 0)
   const refInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {

@@ -1,21 +1,16 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { posibleComands } from './comands'
+import posibleComands from './comands'
 import TypewriterComponent from 'typewriter-effect'
 import Console from '../ui/Console'
 import Image from 'next/image'
 import { lato } from '../ui/fonts'
+import { useState } from 'react'
 
 export default function Home (): JSX.Element {
-  const refInput = useRef<HTMLInputElement>(null)
-  const [startTyping, setStartTyping] = useState<boolean>(false)
+  window.scrollTo(0, 0)
 
-  useEffect(() => {
-    if (refInput.current !== null && startTyping) {
-      refInput.current.focus()
-    }
-  }, [refInput, startTyping])
+  const [startTyping, setStartTyping] = useState<boolean>(false)
 
   const options = {
     delay: 1,
@@ -23,16 +18,19 @@ export default function Home (): JSX.Element {
     cursor: ''
   }
 
+  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0
+
   return (<>
     <Console
       posibleComands={posibleComands}
-      startTyping={startTyping}
+      startTyping={windowWidth >= 768 ? startTyping : null}
+      startTypingFocus={false}
     >
       <div className={`grid sm:grid-cols-1 md:grid-cols-3 gap-4 md:h-[320px] ${lato.className} md:text-lg `}>
         <div className="col-span-1 flex items-center justify-center h-full" >
           <Image src="/fotoPerfil.jpg" alt="Jesús González" width={200} height={300}className='rounded-full' />
         </div>
-        <div className="sm:col-span-1 flex items-center justify-initial  md:col-span-2">
+        <div className="sm:col-span-1 flex items-initial lg:items-center justify-initial  md:col-span-2 min-h-[500px] lg:min-h-0">
           <TypewriterComponent options={options}
             onInit={(typewriter) => {
               typewriter.typeString('Soy <strong>Desarrollador Full Stack</strong> e <strong>Ingeniero Electricista</strong><p></p>')

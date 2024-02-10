@@ -2,15 +2,22 @@
 
 import { useEffect, useRef, useState } from 'react'
 import TypewriterComponent from 'typewriter-effect'
-import { navigate } from '../actions'
+
+export interface Command {
+  command: string
+  description?: string
+  action?: () => void
+}
 
 interface ConsoleProps {
   // Command options for the console
-  posibleComands: string[]
+  posibleComands: Command[]
 
   // When true, the console will start typing the initial message
   // If null or undefined, the console will start typing the initial message when the console is visible/intersected
   startTyping?: boolean | null
+  // When true, there will be a focus in the input
+  startTypingFocus?: boolean
 
   children: React.ReactNode
 }
@@ -18,6 +25,7 @@ interface ConsoleProps {
 export default function Console ({
   posibleComands,
   startTyping,
+  startTypingFocus = true,
   children
 }: ConsoleProps): JSX.Element {
   const [answerStack, setAnswerStack] = useState<string[]>([])
@@ -28,16 +36,14 @@ export default function Console ({
 
   const refInput = useRef<HTMLInputElement>(null)
 
-  const [hidden, setHidden] = useState<boolean>(true)
-
-  const [startTypingInternal, setStartTypingInternal] = useState<boolean>(false)
+  const [inputHidden, setInputHidden] = useState<boolean>(true)
 
   // Focus the input when the input and the possible commands are visible
   useEffect(() => {
-    if (refInput.current !== null && !hidden) {
+    if (refInput.current !== null && !inputHidden && startTypingFocus) {
       refInput.current.focus()
     }
-  }, [refInput, hidden])
+  }, [refInput, inputHidden])
 
   // Typewriter options
   const options = {
@@ -47,7 +53,31 @@ export default function Console ({
   }
 
   // The setting for the console's intersection observer
+
+  // This is used to start typing the initial message when the console is visible/intersected
+  const [startTypingInternal, setStartTypingInternal] = useState<boolean>(false)
   const ref = useRef<HTMLDivElement>(null)
+
+  // The general commands for the console
+  const generalComands = [
+    {
+      command: 'clear',
+      description: 'Clear the console',
+      action: () => {
+        setErrorStack([])
+        setAnswerStack([])
+      }
+
+    },
+    {
+      command: 'clr',
+      description: 'Clear the console',
+      action: () => {
+        setErrorStack([])
+        setAnswerStack([])
+      }
+    }
+  ] as Command[]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -75,6 +105,89 @@ export default function Console ({
     }
   }, [])
 
+  // Handle the form submit for the console
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault()
+
+    if (answer.trim().toLowerCase() === '') {
+      return
+    }
+
+    window.scrollTo(0, document.body.scrollHeight)
+
+    const newStack = [...answerStack, answer.trim().toLowerCase()]
+    setAnswerStack(newStack)
+    setAnswer('')
+    setCurrentAnswerIndex(newStack.length)
+
+    if (generalComands.find((gc) => gc.command === answer.trim().toLowerCase())) {
+      const generalComand = generalComands.find((gc) => gc.command === answer.trim().toLowerCase())
+
+      if (generalComand?.action) {
+        generalComand.action()
+      }
+      return
+    }
+
+    if (posibleComands.find((pc) => pc.command === answer.trim().toLowerCase())) {
+      const posibleComand = posibleComands.find((pc) => pc.command === answer.trim().toLowerCase())
+
+      if (posibleComand?.action) {
+        posibleComand.action()
+      }
+    } else {
+      const newError = 'The command "' + answer.trim().toLowerCase() + '" is not valid'
+
+      setErrorStack([...errorStack, newError])
+    }
+  }
+
+  // Handle the arrow up and down keys in the console to catch the previous commands and autocomplete
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'ArrowUp') {
+      if (currentAnswerIndex > 0) {
+        setAnswer(answerStack[currentAnswerIndex - 1])
+        setCurrentAnswerIndex(currentAnswerIndex - 1)
+      }
+    }
+    if (e.key === 'ArrowDown') {
+      if (currentAnswerIndex < answerStack.length - 1) {
+        setAnswer(answerStack[currentAnswerIndex + 1])
+        setCurrentAnswerIndex(currentAnswerIndex + 1)
+      } else {
+        setAnswer('')
+        setCurrentAnswerIndex(answerStack.length)
+      }
+    }
+    // Autocomplete the command
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      const reg = new RegExp('^' + answer.trim().toLowerCase(), 'i')
+
+      const posibleComand = posibleComands.filter((pa) => reg.test(pa.command))
+
+      if (posibleComand.length === 1) {
+        setAnswer(posibleComand[0].command)
+        return
+      } else if (posibleComand.length > 1) {
+        const common = posibleComand[0].command.split('').reduce((acc, letter, index) => {
+          if (posibleComand.every((pa) => pa.command[index] === letter)) {
+            return acc + letter
+          }
+          return acc
+        }, '')
+
+        setAnswer(common)
+      }
+
+      const generalComand = generalComands.find((pa) => reg.test(pa.command))
+
+      if (generalComand) {
+        setAnswer(generalComand.command)
+      }
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-initial justify-initial px-10 py-5  md:px-15 md:py-12">
       {children}
@@ -97,7 +210,7 @@ export default function Console ({
                   .typeString('>> Escriba en la consola alguna de las opciones para continuar...')
                   .typeString('&nbsp;&nbsp;&nbsp;<p></p>')
                   .callFunction(() => {
-                    setHidden(false)
+                    setInputHidden(false)
                   })
                   .start()
               }}
@@ -106,98 +219,34 @@ export default function Console ({
           : null
         }
 
-        <ul className={hidden ? 'hidden' : ''}>
+        <ul className={inputHidden ? 'hidden' : ''}>
           {
             posibleComands.map((comand, index) => (
               <li key={index}>
               &nbsp;&nbsp;&nbsp;
-                {comand}
+                {comand.command}
               </li>
             ))
           }
         </ul>
         {
           errorStack.map((error, index) => (
-            <div key={index} className="text-red-500">{error}</div>
+            <div key={index} className={`text-red-500 ${index === 0 ? 'mt-5' : ''}`}>{error}</div>
           ))
         }
         <div className="block">
           <form
-            className={hidden ? 'hidden' : ''}
-            onSubmit={(e) => {
-              e.preventDefault()
-
-              if (answer.trim() === '') {
-                return
-              }
-
-              window.scrollTo(0, document.body.scrollHeight)
-
-              const newStack = [...answerStack, answer.trim()]
-              setAnswerStack(newStack)
-              setAnswer('')
-              setCurrentAnswerIndex(newStack.length)
-
-              if (!posibleComands.includes(answer.trim())) {
-                const newError = 'The command "' + answer.trim() + '" is not valid'
-
-                setErrorStack([...errorStack, newError])
-                return
-              }
-              if (answer.trim() === 'clear' || answer.trim() === 'clr') {
-                setErrorStack([])
-                setAnswerStack([])
-                return
-              }
-              if (answer.trim() === 'cd home') {
-                console.log('redirecting to home')
-                // eslint-disable-next-line
-              navigate('/')
-                return
-              }
-              posibleComands.forEach((pc) => {
-                if (answer.trim() === pc) {
-                  const route = pc.split(' ')[1]
-
-                  // eslint-disable-next-line
-                navigate('/' + route)
-                }
-              })
-            }}>
-            {'>>'} <input
+            className={inputHidden ? 'hidden' : ''}
+            onSubmit={onSubmit}
+          >
+            {'>>'}
+            <input
               type="text"
               className="border-none p-2 bg-inherit outline-none "
               ref={refInput}
               value={answer}
               onChange={(e) => { setAnswer(e.target.value) }}
-              onKeyDown={(e) => {
-                if (e.key === 'ArrowUp') {
-                  if (currentAnswerIndex > 0) {
-                    setAnswer(answerStack[currentAnswerIndex - 1])
-                    setCurrentAnswerIndex(currentAnswerIndex - 1)
-                  }
-                }
-                if (e.key === 'ArrowDown') {
-                  if (currentAnswerIndex < answerStack.length - 1) {
-                    setAnswer(answerStack[currentAnswerIndex + 1])
-                    setCurrentAnswerIndex(currentAnswerIndex + 1)
-                  } else {
-                    setAnswer('')
-                    setCurrentAnswerIndex(answerStack.length)
-                  }
-                }
-                if (e.key === 'Tab') {
-                  e.preventDefault()
-                  const reg = new RegExp('^' + answer.trim(), 'i')
-
-                  const comands = posibleComands.filter((pa) => reg.test(pa))
-
-                  if (comands.length === 1) {
-                    setAnswer(comands[0])
-                  }
-                }
-              }
-              }
+              onKeyDown={onKeyDown}
             />
           </form>
         </div>
