@@ -9,7 +9,7 @@ export interface Command {
   action?: () => void
 }
 
-interface ConsoleProps {
+interface ConsoleProps extends React.HTMLProps<HTMLDivElement> {
   // Command options for the console
   posibleComands: Command[]
 
@@ -26,7 +26,8 @@ export default function Console ({
   posibleComands,
   startTyping,
   startTypingFocus = true,
-  children
+  children,
+  ...props
 }: ConsoleProps): JSX.Element {
   const [answerStack, setAnswerStack] = useState<string[]>([])
   const [answer, setAnswer] = useState<string>('')
@@ -113,8 +114,6 @@ export default function Console ({
       return
     }
 
-    window.scrollTo(0, document.body.scrollHeight)
-
     const newStack = [...answerStack, answer.trim().toLowerCase()]
     setAnswerStack(newStack)
     setAnswer('')
@@ -141,6 +140,13 @@ export default function Console ({
       setErrorStack([...errorStack, newError])
     }
   }
+
+  // When something is added to the answer stack, the input will be focussed
+  useEffect(() => {
+    if (refInput.current !== null) {
+      refInput.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
+  }, [answerStack])
 
   // Handle the arrow up and down keys in the console to catch the previous commands and autocomplete
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -189,10 +195,10 @@ export default function Console ({
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-initial justify-initial px-10 py-5  md:px-15 md:py-12">
+    <main {...props} className="flex min-h-screen flex-col items-initial justify-initial px-10 py-5 lg:max-w-screen-xl lg:px-15 lg:py-12">
       {children}
 
-      <div className="block min-h-64" ref={ref}
+      <div className="block min-h-80 lg:text-lg" ref={ref}
         onClick={() => {
           if (refInput.current !== null) {
             refInput.current.focus()
