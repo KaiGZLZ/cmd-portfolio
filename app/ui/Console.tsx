@@ -195,7 +195,7 @@ export default function Console ({
   }
 
   return (
-    <main {...props} className="flex min-h-screen flex-col items-initial justify-initial px-10 py-5 lg:max-w-screen-xl lg:px-15 lg:py-12">
+    <main {...props} className="flex min-h-screen flex-col items-initial justify-initial px-10 py-5 w-full lg:max-w-screen-xl lg:px-15 lg:py-12">
       {children}
 
       <div className="block min-h-80 lg:text-lg" ref={ref}

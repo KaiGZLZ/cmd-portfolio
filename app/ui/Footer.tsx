@@ -5,10 +5,9 @@ import { FaGithub, FaLinkedinIn, FaFilePdf } from 'react-icons/fa'
 
 export default function Footer (): JSX.Element {
   return (
-    <footer className="flex items-center justify-center h-40 bg-black text-white mt-11">
+    <footer className="flex items-center justify-center w-full h-40 bg-black text-white mt-11">
       <FooterButton
         className='ml-7'
-        onClick={() => { console.log('clicked') }}
         Icon={FaGithub}
         href='https://github.com/KaiGZLZ'
         text="Github"

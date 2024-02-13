@@ -12,13 +12,18 @@ export default function RootLayout ({ children }: Readonly<{
   children: React.ReactNode
 }>): JSX.Element {
   return (
-    <html lang="en">
-      <body className={`${courierPrime.className} flex items-center justify-center h-full w-full py-2 `}>
+    <html lang="es">
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Jesús González</title>
+        <meta name="description" content={'Portfolio de Jesús González'} />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className={`${courierPrime.className} flex flex-col items-center justify-center h-full w-full py-2 `}>
         {children}
-      </body>
-      <footer>
         <Footer />
-      </footer>
+      </body>
     </html>
   )
 }
