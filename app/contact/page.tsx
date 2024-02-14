@@ -1,10 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import Console from '../ui/Console'
 import { volkhov } from '../ui/fonts'
 import { contactFormAction } from './actions'
 import comands from './comands'
 import { useForm, type SubmitHandler } from 'react-hook-form'
+import Loader from '../ui/Loader'
+import toast from 'react-simple-toasts'
+import 'react-simple-toasts/dist/theme/info.css'
+import 'react-simple-toasts/dist/theme/success.css'
+import 'react-simple-toasts/dist/theme/failure.css'
 
 interface Inputs {
   name: string
@@ -12,13 +18,27 @@ interface Inputs {
   message: string
 }
 
+interface formError {
+  message: string
+  path: string
+}
+
+interface formResponse {
+  message: string
+  errors?: formError[]
+}
+
 export default function Contact (): JSX.Element {
   window.scrollTo(0, 0)
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
     handleSubmit,
     setError,
+    clearErrors,
+    reset,
     formState: { errors }
   } = useForm<Inputs>()
 
@@ -29,16 +49,42 @@ export default function Contact (): JSX.Element {
       message: data.message.trim()
     }
 
-    await contactFormAction(dataToSend).then((res) => {
+    const taskToast = toast('Enviando la solicitud...', {
+      theme: 'info',
+      loading: true,
+      position: 'top-right',
+      duration: Infinity
+    })
+
+    setIsLoading(true)
+
+    await contactFormAction(dataToSend).then((res: formResponse) => {
       if (res.errors) {
         res.errors.forEach((error) => {
           setError(error.path === 'name' ? 'name' : error.path === 'email' ? 'email' : 'message', {
             message: error.message
           })
         })
+      } else {
+        setIsLoading(false)
+        reset()
+        clearErrors()
+        taskToast.update({
+          message: '✅ Correo enviado correctamente',
+          theme: 'success',
+          loading: false,
+          duration: 3000
+        })
       }
     }).catch((err) => {
       console.log({ err })
+      setIsLoading(false)
+      taskToast.update({
+        message: '❌ Error al enviar el correo',
+        theme: 'failure',
+        loading: false,
+        duration: 3000
+      })
     })
   }
 
@@ -48,7 +94,7 @@ export default function Contact (): JSX.Element {
       <Console
         posibleComands={comands}
       >
-        <div className="flex flex-col items-center justify-center w-full min-w-[300] lg:min-w-[740px] gap-4">
+        <div className="flex flex-col items-center justify-center w-full min-w-[300] lg:min-w-[740px] gap-4 mb-20">
           {/* Botones de las redes sociales */}
           <div className={`flex ${volkhov.className} animate-fade-left`}>
             <a
@@ -124,9 +170,10 @@ export default function Contact (): JSX.Element {
             </section>
             <button
               type="submit"
-              className="animate-fade-left animate-delay-1000 lg:w-2/3 px-2 py-1 m-2 font-bold rounded-xl bg-slate-800 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900"
+              disabled={isLoading}
+              className="animate-fade-left animate-delay-1000 w-2/3 lg:w-1/3 px-2 py-1 m-2 font-bold rounded-xl bg-slate-800 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900"
             >
-                Enviar
+              Enviar <Loader isLoading={isLoading} />
             </button>
           </form>
         </div>

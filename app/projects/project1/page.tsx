@@ -12,7 +12,7 @@ export default function Home (): JSX.Element {
     <Console
       posibleComands={posibleComands}
     >
-      <h1 className={`${volkhov.className} text-4xl font-bold mb-10 w-full flex items-center justify-center`}>Sistema de control financiero</h1>
+      <h1 className={`${volkhov.className} text-3xl lg:text-4xl text-center font-bold mb-10 w-full flex items-center justify-center`}>Sistema de control financiero</h1>
       <DivFade fade="fade-left"delay={300}>
         <div className={`flex flex-col lg:flex-row  gap-4 lg:h-[275px] ${roboto.className} px-10 py-10 lg:py-0 mb-5 rounded-xl lg:text-lg bg-slate-800`}>
           <ExpandedImage className='lg:w-1/3' src="/foto.png" alt="Jesús González"/>

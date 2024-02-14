@@ -19,6 +19,8 @@ interface ConsoleProps extends React.HTMLProps<HTMLDivElement> {
   // When true, there will be a focus in the input
   startTypingFocus?: boolean
 
+  delay?: number
+
   children: React.ReactNode
 }
 
@@ -26,6 +28,7 @@ export default function Console ({
   posibleComands,
   startTyping,
   startTypingFocus = true,
+  delay,
   children,
   ...props
 }: ConsoleProps): JSX.Element {
@@ -53,12 +56,6 @@ export default function Console ({
     cursor: ''
   }
 
-  // The setting for the console's intersection observer
-
-  // This is used to start typing the initial message when the console is visible/intersected
-  const [startTypingInternal, setStartTypingInternal] = useState<boolean>(false)
-  const ref = useRef<HTMLDivElement>(null)
-
   // The general commands for the console
   const generalComands = [
     {
@@ -79,6 +76,27 @@ export default function Console ({
       }
     }
   ] as Command[]
+
+  // This is used to start typing the initial message when the console is visible/intersected of setted with a delay
+  const [startTypingInternal, setStartTypingInternal] = useState<boolean>(false)
+
+  // The delay if exists
+  useEffect(() => {
+    if (delay) {
+      const timeoutId = setTimeout(() => {
+        setStartTypingInternal(true)
+      }, delay)
+
+      // Limpiar el temporizador cuando el componente se actualice o se desmonte.
+      return () => {
+        clearTimeout(timeoutId)
+      }
+    }
+  }, []) // Dependencia en 'seconds' para que el efecto se ejecute después de cada actualización.
+
+  // The setting for the console's intersection observer
+
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
