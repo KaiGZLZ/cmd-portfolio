@@ -20,11 +20,5 @@ export default [
     description: 'Go to the projects page',
     // eslint-disable-next-line
     action: () => { navigate('/projects') }
-  },
-  {
-    command: 'cd contact',
-    description: 'Go to the contact page',
-    // eslint-disable-next-line
-    action: () => { navigate('/contact') }
   }
 ] as Command[]

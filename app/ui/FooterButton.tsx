@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { type IconType } from 'react-icons'
 
 interface FooterButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  href: string
+  href?: string
   text: string
   Icon: IconType
 }

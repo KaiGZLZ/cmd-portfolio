@@ -88,6 +88,8 @@ export default function Contact (): JSX.Element {
     })
   }
 
+  const [cvButtons, setCvButtons] = useState(false)
+
   return (
     <div className='flex items-center justify-center h-full w-full'>
 
@@ -113,18 +115,35 @@ export default function Contact (): JSX.Element {
             >
             Linkedin
             </a>
-            <a
-              className="flex items-center justify-center cursor-pointer text-lg lg:text-xl px-2 py-1 m-2 font-bold rounded-xl bg-slate-800 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900"
-              href='https://drive.google.com/file/d/1n7u_XdkqIs_wSqE39v-j_OaeBz57xgFr/view'
-              target='_blank'
-              rel='noreferrer'
-            >
-            CV
-            </a>
+            <div className='relative'>
+              <div
+                className="flex items-center justify-center cursor-pointer text-lg lg:text-xl px-2 py-1 m-2 font-bold rounded-xl bg-slate-800 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900"
+                onClick={() => { setCvButtons(!cvButtons) }}
+              >
+                CV
+              </div>
+              <a
+                className={`absolute transition-opacity duration-200 ${cvButtons ? 'opacity-100' : 'opacity-0'} ml-2 top-full left-[-30%] flex items-center justify-center cursor-pointer text-lg lg:text-xl px-2 py-1 font-bold rounded-xl bg-slate-700 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900`}
+                href='https://drive.google.com/file/d/1XLXoj1OFBIkmouHsOrdH6QNo5yCujcP7/view?usp=drive_link'
+                target='_blank'
+                rel='noreferrer'
+              >
+                ES
+              </a>
+              <a
+                className={`absolute ${cvButtons ? 'animate-fade' : 'opacity-0'} ml-2 top-full left-[50%] flex items-center justify-center cursor-pointer text-lg lg:text-xl px-2 py-1 font-bold rounded-xl bg-slate-700 border border-gray-500 transition duration-300 hover:bg-slate-300 hover:text-gray-900`}
+                href='https://drive.google.com/file/d/1n7u_XdkqIs_wSqE39v-j_OaeBz57xgFr/view'
+                target='_blank'
+                rel='noreferrer'
+              >
+                EN
+              </a>
+            </div>
+
           </div>
           {/* Seccion del formulario */}
           {/* eslint-disable-next-line */}
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center w-full gap-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center w-full gap-5 -z-10">
             <section className='flex flex-col w-full lg:w-2/3 animate-fade-left animate-delay-300'>
               <label htmlFor="name" className="w-full text-left mb-2 text-white">Nombre</label>
               <input
