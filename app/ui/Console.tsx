@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import TypewriterComponent from 'typewriter-effect'
 
@@ -32,6 +33,8 @@ export default function Console ({
   children,
   ...props
 }: ConsoleProps): JSX.Element {
+  const router = useRouter()
+
   const [answerStack, setAnswerStack] = useState<string[]>([])
   const [answer, setAnswer] = useState<string>('')
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState<number>(0)
@@ -74,6 +77,20 @@ export default function Console ({
         setErrorStack([])
         setAnswerStack([])
       }
+    },
+    {
+      command: 'back',
+      description: 'Go to the previous page',
+      action: () => {
+        router.back()
+      }
+    },
+    {
+      command: 'cd ..',
+      description: 'Go to the previous page',
+      action: () => {
+        router.back()
+      }
     }
   ] as Command[]
 
@@ -95,9 +112,9 @@ export default function Console ({
   }, []) // Dependencia en 'seconds' para que el efecto se ejecute después de cada actualización.
 
   // The setting for the console's intersection observer
-
   const ref = useRef<HTMLDivElement>(null)
 
+  // useEffect(() for the intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {

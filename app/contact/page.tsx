@@ -148,9 +148,9 @@ export default function Contact (): JSX.Element {
           </div>
           {/* Seccion del formulario */}
           {/* eslint-disable-next-line */}
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center w-full gap-5 -z-10">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center w-full gap-5">
             <section className='flex flex-col w-full lg:w-2/3 animate-fade-left animate-delay-300'>
-              <label htmlFor="name" className="w-full text-left mb-2 text-white">Nombre</label>
+              <label htmlFor="name" className="w-full text-left mb-2 text-white -z-10" >Nombre</label>
               <input
                 type="text"
                 id="name"
