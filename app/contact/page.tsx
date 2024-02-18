@@ -11,6 +11,7 @@ import toast from 'react-simple-toasts'
 import 'react-simple-toasts/dist/theme/info.css'
 import 'react-simple-toasts/dist/theme/success.css'
 import 'react-simple-toasts/dist/theme/failure.css'
+import Head from 'next/head'
 
 interface Inputs {
   name: string
@@ -92,7 +93,11 @@ export default function Contact (): JSX.Element {
 
   return (
     <div className='flex items-center justify-center h-full w-full'>
-
+      <Head>
+        <title>Jesús Gonzalez | Contacto</title>
+        <meta name="description" content="Contacta a Jesús González" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Console
         posibleComands={comands}
       >

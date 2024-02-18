@@ -4,15 +4,22 @@ import { useState, type HTMLAttributes } from 'react'
 interface ExpandedImageProps extends HTMLAttributes<HTMLDivElement> {
   src: string
   alt: string
+  disabled?: boolean
 }
 
-export default function ExpandedImage ({ src, alt, ...props }: ExpandedImageProps): JSX.Element {
+export default function ExpandedImage ({ src, alt, disabled, ...props }: ExpandedImageProps): JSX.Element {
   const [zoom, setZoom] = useState(false)
 
   return (
     <div {...props}>
       <div className="flex items-center justify-center h-full transition hover:scale-110 cursor-pointer"
-        onClick={() => { setZoom(!zoom) }}
+        onClick={() => {
+          if (disabled) {
+            setZoom(false)
+            return
+          }
+          setZoom(!zoom)
+        }}
       >
         <Image src={src} alt={alt} width={302} height={170}/>
       </div>
@@ -21,8 +28,8 @@ export default function ExpandedImage ({ src, alt, ...props }: ExpandedImageProp
       >
         <div className="fixed justify-center w-full h-full bg-black opacity-50">
         </div>
-        <Image src="/foto.png" alt="Jesús González" width={600} height={700}
-          className={`transition-transform duration-500 ease-in-out transform ${zoom ? 'scale-75 lg:scale-150' : 'scale-0'}`}
+        <Image src={src} alt="Jesús González" width={1048} height={592}
+          className={`transition-transform duration-500 ease-in-out transform ${zoom ? '' : 'scale-0'}`}
         />
       </div>
     </div>
