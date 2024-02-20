@@ -14,7 +14,6 @@ export default function Home (): JSX.Element {
   }, [])
   return (<>
     <Head>
-
       <title>Jesús González | Proyecto 1 </title>
       <meta name="description" content="Jesús González | Proyectos" />
       <link rel="icon" href="/favicon.ico" />
