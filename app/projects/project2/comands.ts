@@ -3,10 +3,10 @@ import { type Command } from '@/app/ui/Console'
 
 export default [
   {
-    command: 'cd project2',
-    description: 'Go to the projects 2 page',
+    command: 'cd project1',
+    description: 'Go to the projects 1 page',
     // eslint-disable-next-line
-    action: () => { navigate('/project2') }
+    action: () => { navigate('/projects/project1') }
   },
   {
     command: 'cd projects',

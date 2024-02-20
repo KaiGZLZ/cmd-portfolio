@@ -6,7 +6,7 @@ export default [
     command: 'cd project2',
     description: 'Go to the projects 2 page',
     // eslint-disable-next-line
-    action: () => { navigate('/project2') }
+    action: () => { navigate('/projects/project2') }
   },
   {
     command: 'cd projects',

@@ -67,11 +67,10 @@ export default function Home (): JSX.Element {
             <p className="text-justify">
               Este proyecto fué realizado con <strong>Nextjs</strong> y <strong>Tailwind</strong>, además de hacer uso de <strong>Server Actions</strong> y otras librerías que permiten las diferentes funcionalidades que se ven en el sitio. <br />
               Para ver más detalles de como se realizó este proyecto, puede hacer click en el siguiente enlace.
-
             </p>
             <a
               className="w-full text-end hover:underline transition duration-200 ease-in "
-              href="/projects/project1"
+              href="https://github.com/KaiGZLZ/cmd-portfolio"
               target="_blank"
               rel="noopener noreferrer"
             >
