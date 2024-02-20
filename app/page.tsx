@@ -7,7 +7,9 @@ import Console from './ui/Console'
 import { bangers } from './ui/fonts'
 
 export default function Home (): JSX.Element {
-  window.scrollTo(0, 0)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const refInput = useRef<HTMLInputElement>(null)
   const [startTyping, setStartTyping] = useState<boolean>(false)
 

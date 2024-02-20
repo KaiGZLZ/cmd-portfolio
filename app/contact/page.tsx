@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Console from '../ui/Console'
 import { volkhov } from '../ui/fonts'
 import { contactFormAction } from './actions'
@@ -30,7 +30,9 @@ interface formResponse {
 }
 
 export default function Contact (): JSX.Element {
-  window.scrollTo(0, 0)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const [isLoading, setIsLoading] = useState(false)
 

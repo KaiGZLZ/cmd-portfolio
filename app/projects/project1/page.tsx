@@ -6,9 +6,12 @@ import { roboto, volkhov } from '../../ui/fonts'
 import ExpandedImage from '@/app/ui/ExpandedImage'
 import DivFade from '@/app/ui/DivFade'
 import Head from 'next/head'
+import { useEffect } from 'react'
 
 export default function Home (): JSX.Element {
-  window.scrollTo(0, 0)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   return (<>
     <Head>
 

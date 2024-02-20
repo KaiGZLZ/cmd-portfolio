@@ -10,7 +10,9 @@ import ExpandedImage from '../ui/ExpandedImage'
 import Head from 'next/head'
 
 export default function Home (): JSX.Element {
-  window.scrollTo(0, 0)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const refInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {

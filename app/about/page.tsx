@@ -5,10 +5,12 @@ import Console from '../ui/Console'
 import Image from 'next/image'
 import { lato } from '../ui/fonts'
 import { CiLocationOn } from 'react-icons/ci'
+import { useEffect } from 'react'
 
 export default function Home (): JSX.Element {
-  window.scrollTo(0, 0)
-
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0
 
   return (<>
